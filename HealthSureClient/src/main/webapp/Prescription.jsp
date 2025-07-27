@@ -80,9 +80,26 @@
             text-decoration: underline;
         }
 
-        .arrow {
+        .sort-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sort-icons {
+            display: inline-flex;
+            flex-direction: column;
             margin-left: 5px;
-            font-size: 13px;
+        }
+
+        .sort-icon {
+            font-size: 0.7em;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .sort-icon:hover {
+            color: #007bff;
         }
     </style>
 </head>
@@ -99,7 +116,7 @@
             <h:outputText value="#{medicalHistoryController.medicalProcedure.procedureId}" />
         </div>
 
-       	<h:outputText value="Total Records : #{medicalHistoryController.totalPrescriptionRecords}"/>
+        <h:outputText value="Total Records : #{medicalHistoryController.totalPrescriptionRecords}"/>
 
         <!-- Back Button -->
         <div style="margin-bottom: 20px;">
@@ -113,17 +130,22 @@
         <div class="table-container">
             <h:dataTable value="#{medicalHistoryController.paginatedPrescriptions}" var="presc"
                          styleClass="prescription-table"
-                         rendered="#{not empty medicalHistoryController.prescriptionList}">
+                         rendered="#{not empty medicalHistoryController.allPrescriptions}">
 
                 <!-- Prescription ID -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortPrescriptionsBy('prescriptionId')}">
-                            <span>Prescription ID
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.prescriptionSortColumn eq 'prescriptionId' ? (medicalHistoryController.prescriptionSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Prescription ID" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByAsc('prescriptionId')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'prescriptionId' and medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByDesc('prescriptionId')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'prescriptionId' and not medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{presc.prescriptionId}" />
                 </h:column>
@@ -131,12 +153,17 @@
                 <!-- Written On -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortPrescriptionsBy('writtenOn')}">
-                            <span>Written On
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.prescriptionSortColumn eq 'writtenOn' ? (medicalHistoryController.prescriptionSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Written On" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByAsc('writtenOn')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'writtenOn' and medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByDesc('writtenOn')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'writtenOn' and not medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{presc.writtenOn}">
                         <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -146,12 +173,17 @@
                 <!-- Start Date -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortPrescriptionsBy('startDate')}">
-                            <span>Start Date
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.prescriptionSortColumn eq 'startDate' ? (medicalHistoryController.prescriptionSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Start Date" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByAsc('startDate')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'startDate' and medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByDesc('startDate')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'startDate' and not medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{presc.startDate}">
                         <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -161,12 +193,17 @@
                 <!-- End Date -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortPrescriptionsBy('endDate')}">
-                            <span>End Date
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.prescriptionSortColumn eq 'endDate' ? (medicalHistoryController.prescriptionSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="End Date" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByAsc('endDate')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'endDate' and medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByDesc('endDate')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'endDate' and not medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{presc.endDate}">
                         <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -176,12 +213,17 @@
                 <!-- Doctor Name -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortPrescriptionsBy('doctorName')}">
-                            <span>Doctor
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.prescriptionSortColumn eq 'doctorName' ? (medicalHistoryController.prescriptionSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Doctor" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByAsc('doctorName')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'doctorName' and medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortPrescriptionsByDesc('doctorName')}" 
+                                               rendered="#{!(medicalHistoryController.prescriptionSortColumn eq 'doctorName' and not medicalHistoryController.prescriptionSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{presc.doctor.doctorName}" />
                 </h:column>
@@ -208,11 +250,23 @@
         <!-- Pagination Controls -->
         <div class="pagination">
             <h:panelGroup layout="block" styleClass="pagination-panel" style="margin-top: 20px;">
-                <h:commandButton value="First" action="#{medicalHistoryController.goToFirstPrescriptionPage}" disabled="#{medicalHistoryController.prescriptionCurrentPage == 1}" />
-                    <h:commandButton value="Previous" action="#{medicalHistoryController.goToPreviousPrescriptionPage}" disabled="#{medicalHistoryController.prescriptionCurrentPage == 1}" />
-                    <h:outputText value="Page #{medicalHistoryController.prescriptionCurrentPage} of #{medicalHistoryController.totalPrescriptionPages}" />
-                    <h:commandButton value="Next" action="#{medicalHistoryController.goToNextPrescriptionPage}" disabled="#{medicalHistoryController.prescriptionCurrentPage == medicalHistoryController.totalPrescriptionPages}" />
-                    <h:commandButton value="Last" action="#{medicalHistoryController.goToLastPrescriptionPage}" disabled="#{medicalHistoryController.prescriptionCurrentPage == medicalHistoryController.totalPrescriptionPages}" />
+                <h:commandButton value="First" 
+                                action="#{medicalHistoryController.goToFirstPrescriptionPage}" 
+                                disabled="#{medicalHistoryController.prescriptionCurrentPage == 1}" 
+                                styleClass="btn" />
+                <h:commandButton value="Previous" 
+                                action="#{medicalHistoryController.goToPreviousPrescriptionPage}" 
+                                disabled="#{medicalHistoryController.prescriptionCurrentPage == 1}" 
+                                styleClass="btn" />
+                <h:outputText value="Page #{medicalHistoryController.prescriptionCurrentPage} of #{medicalHistoryController.totalPrescriptionPages}" />
+                <h:commandButton value="Next" 
+                                action="#{medicalHistoryController.goToNextPrescriptionPage}" 
+                                disabled="#{medicalHistoryController.prescriptionCurrentPage == medicalHistoryController.totalPrescriptionPages}" 
+                                styleClass="btn" />
+                <h:commandButton value="Last" 
+                                action="#{medicalHistoryController.goToLastPrescriptionPage}" 
+                                disabled="#{medicalHistoryController.prescriptionCurrentPage == medicalHistoryController.totalPrescriptionPages}" 
+                                styleClass="btn" />
             </h:panelGroup>
         </div>
 

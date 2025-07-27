@@ -75,12 +75,30 @@ input[type="text"], select {
     text-align: center;
 }
 
-.menu-link.cyan {
-    background-color: #06b6d4; /* cyan-500 */
+.sort-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.menu-link.cyan:hover {
-    background-color: #0891b2; /* cyan-600 */
+.sort-icons {
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: 5px;
+}
+
+.sort-icon {
+    font-size: 0.7em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.sort-icon:hover {
+    color: #007bff;
+}
+
+.arrow {
+    margin-left: 5px;
 }
 </style>
 </head>
@@ -206,25 +224,34 @@ input[type="text"], select {
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('procedureId')}">
-                                        <span class="sort-header"> Procedure ID <h:outputText
-                                                styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'procedureId' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Procedure ID" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('procedureId')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'procedureId' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('procedureId')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'procedureId' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.procedureId}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('recipientName')}">
-                                        <span> Recipient Name <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'recipientName' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Recipient Name" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('recipientName')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'recipientName' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('recipientName')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'recipientName' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText
                                     value="#{proc.recipient.firstName} #{proc.recipient.lastName}" />
@@ -232,12 +259,17 @@ input[type="text"], select {
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('procedureDate')}">
-                                        <span> Procedure Date <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'procedureDate' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Procedure Date" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('procedureDate')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'procedureDate' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('procedureDate')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'procedureDate' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.procedureDate}">
                                     <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -246,24 +278,34 @@ input[type="text"], select {
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('diagnosis')}">
-                                        <span> Diagnosis <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'diagnosis' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Diagnosis" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('diagnosis')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'diagnosis' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('diagnosis')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'diagnosis' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.diagnosis}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('recommendations')}">
-                                        <span> Recommendations <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'recommendations' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Recommendations" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('recommendations')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'recommendations' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('recommendations')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'recommendations' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.recommendations}" />
                             </h:column>
@@ -282,18 +324,22 @@ input[type="text"], select {
                         style="margin-top: 20px;">
                         <h:commandButton value="First"
                             action="#{medicalHistoryController.goToFirstProcedurePage}"
-                            disabled="#{medicalHistoryController.currentPage == 1}" />
+                            disabled="#{medicalHistoryController.currentPage == 1}" 
+                            styleClass="btn" />
                         <h:commandButton value="Previous"
                             action="#{medicalHistoryController.previousPage}"
-                            disabled="#{medicalHistoryController.currentPage == 1}" />
+                            disabled="#{medicalHistoryController.currentPage == 1}" 
+                            styleClass="btn" />
                         <h:outputText
                             value="Page #{medicalHistoryController.currentPage} of #{medicalHistoryController.totalPages}" />
                         <h:commandButton value="Next"
                             action="#{medicalHistoryController.nextPage}"
-                            disabled="#{medicalHistoryController.currentPage == medicalHistoryController.totalPages}" />
+                            disabled="#{medicalHistoryController.currentPage == medicalHistoryController.totalPages}" 
+                            styleClass="btn" />
                         <h:commandButton value="Last"
                             action="#{medicalHistoryController.goToLastProcedurePage}"
-                            disabled="#{medicalHistoryController.currentPage == medicalHistoryController.totalPages}" />
+                            disabled="#{medicalHistoryController.currentPage == medicalHistoryController.totalPages}" 
+                            styleClass="btn" />
                     </h:panelGroup>
                 </div>
             </h:panelGroup>
@@ -313,25 +359,34 @@ input[type="text"], select {
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('procedureId')}">
-                                        <span class="sort-header"> Procedure ID <h:outputText
-                                                styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'procedureId' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Procedure ID" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('procedureId')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'procedureId' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('procedureId')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'procedureId' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.procedureId}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('recipientName')}">
-                                        <span> Recipient Name <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'recipientName' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Recipient Name" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('recipientName')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'recipientName' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('recipientName')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'recipientName' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText
                                     value="#{proc.recipient.firstName} #{proc.recipient.lastName}" />
@@ -339,12 +394,17 @@ input[type="text"], select {
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('scheduledDate')}">
-                                        <span> Scheduled Date <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'scheduledDate' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Scheduled Date" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('scheduledDate')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'scheduledDate' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('scheduledDate')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'scheduledDate' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.scheduledDate}">
                                     <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -353,12 +413,17 @@ input[type="text"], select {
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('fromDate')}">
-                                        <span> From Date <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'fromDate' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="From Date" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('fromDate')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'fromDate' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('fromDate')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'fromDate' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.fromDate}">
                                     <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -367,12 +432,17 @@ input[type="text"], select {
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('toDate')}">
-                                        <span> To Date <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'toDate' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="To Date" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('toDate')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'toDate' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('toDate')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'toDate' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.toDate}">
                                     <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -381,24 +451,34 @@ input[type="text"], select {
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('diagnosis')}">
-                                        <span> Diagnosis <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'diagnosis' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Diagnosis" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('diagnosis')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'diagnosis' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('diagnosis')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'diagnosis' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.diagnosis}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">
-                                    <h:commandLink
-                                        action="#{medicalHistoryController.sortBy('recommendations')}">
-                                        <span> Recommendations <h:outputText styleClass="arrow"
-                                                value="#{medicalHistoryController.sortColumn eq 'recommendations' ? (medicalHistoryController.sortAscending ? '▲' : '▼') : ''}" />
-                                        </span>
-                                    </h:commandLink>
+                                    <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                                        <h:outputText value="Recommendations" />
+                                        <h:panelGroup styleClass="sort-icons">
+                                            <h:commandLink action="#{medicalHistoryController.sortByAsc('recommendations')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'recommendations' and medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▲</h:commandLink>
+                                            <h:commandLink action="#{medicalHistoryController.sortByDesc('recommendations')}" 
+                                                           rendered="#{!(medicalHistoryController.sortColumn eq 'recommendations' and not medicalHistoryController.sortAscending)}" 
+                                                           styleClass="sort-icon">▼</h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </f:facet>
                                 <h:outputText value="#{proc.recommendations}" />
                             </h:column>
@@ -427,18 +507,22 @@ input[type="text"], select {
                         style="margin-top: 20px;">
                         <h:commandButton value="First"
                             action="#{medicalHistoryController.goToFirstProcedurePage}"
-                            disabled="#{medicalHistoryController.currentPage == 1}" />
+                            disabled="#{medicalHistoryController.currentPage == 1}" 
+                            styleClass="btn" />
                         <h:commandButton value="Previous"
-                            action="#{medicalHistoryController.previousProcedurePage}"
-                            disabled="#{medicalHistoryController.currentPage == 1}" />
+                            action="#{medicalHistoryController.previousPage}"
+                            disabled="#{medicalHistoryController.currentPage == 1}" 
+                            styleClass="btn" />
                         <h:outputText
                             value="Page #{medicalHistoryController.currentPage} of #{medicalHistoryController.totalPages}" />
                         <h:commandButton value="Next"
                             action="#{medicalHistoryController.nextPage}"
-                            disabled="#{medicalHistoryController.currentPage == medicalHistoryController.totalPages}" />
+                            disabled="#{medicalHistoryController.currentPage == medicalHistoryController.totalPages}" 
+                            styleClass="btn" />
                         <h:commandButton value="Last"
                             action="#{medicalHistoryController.goToLastProcedurePage}"
-                            disabled="#{medicalHistoryController.currentPage == medicalHistoryController.totalPages}" />
+                            disabled="#{medicalHistoryController.currentPage == medicalHistoryController.totalPages}" 
+                            styleClass="btn" />
                     </h:panelGroup>
                 </div>
             </h:panelGroup>

@@ -80,9 +80,26 @@
             text-decoration: underline;
         }
 
-        .arrow {
+        .sort-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sort-icons {
+            display: inline-flex;
+            flex-direction: column;
             margin-left: 5px;
-            font-size: 13px;
+        }
+
+        .sort-icon {
+            font-size: 0.7em;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .sort-icon:hover {
+            color: #007bff;
         }
         
         .info-text {
@@ -127,12 +144,17 @@
                 <!-- Test ID -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortTestsBy('testId')}">
-                            <span>Test ID
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.testsSortColumn eq 'testId' ? (medicalHistoryController.testsSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Test ID" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortTestsByAsc('testId')}" 
+                                               rendered="#{!(medicalHistoryController.testsSortColumn eq 'testId' and medicalHistoryController.testsSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortTestsByDesc('testId')}" 
+                                               rendered="#{!(medicalHistoryController.testsSortColumn eq 'testId' and not medicalHistoryController.testsSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{test.testId}" />
                 </h:column>
@@ -140,12 +162,17 @@
                 <!-- Test Name -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortTestsBy('testName')}">
-                            <span>Test Name
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.testsSortColumn eq 'testName' ? (medicalHistoryController.testsSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Test Name" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortTestsByAsc('testName')}" 
+                                               rendered="#{!(medicalHistoryController.testsSortColumn eq 'testName' and medicalHistoryController.testsSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortTestsByDesc('testName')}" 
+                                               rendered="#{!(medicalHistoryController.testsSortColumn eq 'testName' and not medicalHistoryController.testsSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{test.testName}" />
                 </h:column>
@@ -153,12 +180,17 @@
                 <!-- Test Date -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortTestsBy('testDate')}">
-                            <span>Test Date
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.testsSortColumn eq 'testDate' ? (medicalHistoryController.testsSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Test Date" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortTestsByAsc('testDate')}" 
+                                               rendered="#{!(medicalHistoryController.testsSortColumn eq 'testDate' and medicalHistoryController.testsSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortTestsByDesc('testDate')}" 
+                                               rendered="#{!(medicalHistoryController.testsSortColumn eq 'testDate' and not medicalHistoryController.testsSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{test.testDate}">
                         <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -168,12 +200,17 @@
                 <!-- Result Summary -->
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{medicalHistoryController.sortTestsBy('resultSummary')}">
-                            <span>Result Summary
-                                <h:outputText styleClass="arrow"
-                                              value="#{medicalHistoryController.testsSortColumn eq 'resultSummary' ? (medicalHistoryController.testsSortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Result Summary" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{medicalHistoryController.sortTestsByAsc('resultSummary')}" 
+                                               rendered="#{!(medicalHistoryController.testsSortColumn eq 'resultSummary' and medicalHistoryController.testsSortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{medicalHistoryController.sortTestsByDesc('resultSummary')}" 
+                                               rendered="#{!(medicalHistoryController.testsSortColumn eq 'resultSummary' and not medicalHistoryController.testsSortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{test.resultSummary}" />
                 </h:column>

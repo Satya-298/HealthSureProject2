@@ -36,12 +36,10 @@ public class MedicalHistoryController {
     //----------------Prescription-------------------
     
     private List<Prescription> allPrescriptions;
-    private List<Prescription> prescriptionList;
     private Prescription selectedPrescription;
 
     private int prescriptionCurrentPage = 1;
     private int prescriptionPageSize = 5;
-    private int prescriptionTotalPages;
 
     private String prescriptionSortColumn = "";
     private boolean prescriptionSortAscending = true;
@@ -199,7 +197,7 @@ public class MedicalHistoryController {
             }
         }
 
-        resetPagination();
+        currentPage = 1;
         return null;
     }
     public String confirmSearchType() {
@@ -218,69 +216,82 @@ public class MedicalHistoryController {
         this.sortColumn = null;
         this.sortAscending = true;
         this.currentPage = 0;
-        this.prescriptionList = null;
+        this.allPrescriptions = null;
         this.medicalProcedure = null;
         this.procedureTypeSelected = null;
         return null;
     }
 
-    public void resetPagination() {
-        currentPage = 1;
+ // Replace the existing sortBy() method with these:
+    public void sortByAsc(String column) {
+        this.sortColumn = column;
+        this.sortAscending = true;
+        sortProcedures();
     }
 
-    public String sortBy(String column) {
-        if (column.equals(this.sortColumn)) {
-            this.sortAscending = !this.sortAscending;
-        } else {
-            this.sortColumn = column;
-            this.sortAscending = true;
-        }
+    public void sortByDesc(String column) {
+        this.sortColumn = column;
+        this.sortAscending = false;
+        sortProcedures();
+    }
 
+    private void sortProcedures() {
         if (searchResults != null) {
-            Comparator<MedicalProcedure> comparator = null;
-
-            switch (column) {
-                case "procedureId":
-                    comparator = Comparator.comparing(MedicalProcedure::getProcedureId, Comparator.nullsLast(String::compareTo));
-                    break;
-                case "procedureDate":
-                    comparator = Comparator.comparing(MedicalProcedure::getProcedureDate, Comparator.nullsLast(Date::compareTo));
-                    break;
-                case "diagnosis":
-                    comparator = Comparator.comparing(MedicalProcedure::getDiagnosis, Comparator.nullsLast(String::compareToIgnoreCase));
-                    break;
-                case "recommendations":
-                    comparator = Comparator.comparing(MedicalProcedure::getRecommendations, Comparator.nullsLast(String::compareToIgnoreCase));
-                    break;
-                case "recipientName":
-                    comparator = Comparator.comparing(
-                            p -> (p.getRecipient() != null)
-                                    ? (p.getRecipient().getFirstName() + p.getRecipient().getLastName())
-                                    : "",
-                            Comparator.nullsLast(String::compareToIgnoreCase));
-                    break;
-                case "fromDate":
-                    comparator = Comparator.comparing(MedicalProcedure::getFromDate, Comparator.nullsLast(Date::compareTo));
-                    break;
-                case "toDate":
-                    comparator = Comparator.comparing(MedicalProcedure::getToDate, Comparator.nullsLast(Date::compareTo));
-                    break;
-            }
-
-            if (comparator != null) {
-                if (!sortAscending) {
-                    comparator = comparator.reversed();
+            Collections.sort(searchResults, new Comparator<MedicalProcedure>() {
+                public int compare(MedicalProcedure p1, MedicalProcedure p2) {
+                    int result = 0;
+                    switch (sortColumn) {
+                        case "procedureId":
+                            result = safeCompare(p1.getProcedureId(), p2.getProcedureId());
+                            break;
+                        case "procedureDate":
+                            result = safeCompare(p1.getProcedureDate(), p2.getProcedureDate());
+                            break;
+                        case "diagnosis":
+                            result = safeCompare(p1.getDiagnosis(), p2.getDiagnosis());
+                            break;
+                        case "recommendations":
+                            result = safeCompare(p1.getRecommendations(), p2.getRecommendations());
+                            break;
+                        case "recipientName":
+                            String name1 = (p1.getRecipient() != null) ? 
+                                (p1.getRecipient().getFirstName() + " " + p1.getRecipient().getLastName()) : "";
+                            String name2 = (p2.getRecipient() != null) ? 
+                                (p2.getRecipient().getFirstName() + " " + p2.getRecipient().getLastName()) : "";
+                            result = name1.compareToIgnoreCase(name2);
+                            break;
+                        case "fromDate":
+                            result = safeCompare(p1.getFromDate(), p2.getFromDate());
+                            break;
+                        case "toDate":
+                            result = safeCompare(p1.getToDate(), p2.getToDate());
+                            break;
+                        default:
+                            result = 0;
+                    }
+                    return sortAscending ? result : -result;
                 }
-                searchResults.sort(comparator);
-            }
+            });
         }
-
-        // Reset pagination
         currentPage = 1;
         getPaginatedList();
-        return null;
     }
 
+    private <T extends Comparable<T>> int safeCompare(T o1, T o2) {
+        if (o1 == null && o2 == null) return 0;
+        if (o1 == null) return -1;
+        if (o2 == null) return 1;
+        return o1.compareTo(o2);
+    }
+    
+    public boolean isAscDisabled(String column) {
+        return column.equals(this.sortColumn) && this.sortAscending;
+    }
+
+    public boolean isDescDisabled(String column) {
+        return column.equals(this.sortColumn) && !this.sortAscending;
+    }
+    
     public List<MedicalProcedure> getPaginatedList() {
         if (searchResults == null) return null;
         int start = (currentPage - 1) * pageSize;
@@ -326,7 +337,7 @@ public class MedicalHistoryController {
         FacesContext context = FacesContext.getCurrentInstance();
         
         // Initialize collections
-        this.prescriptionList = new ArrayList<>();
+        this.allPrescriptions = new ArrayList<>();
         this.prescribedMedicines = new ArrayList<>();
         this.prescribedTests = new ArrayList<>();
         
@@ -344,7 +355,7 @@ public class MedicalHistoryController {
             Prescription detailed = medicalHistoryDao.getPrescriptionWithDetails(p.getPrescriptionId());
             
             if (detailed != null) {
-                this.prescriptionList.add(detailed);
+                this.allPrescriptions.add(detailed);
                 
                 if (detailed.getPrescribedMedicines() != null) {
                     this.prescribedMedicines.addAll(detailed.getPrescribedMedicines());
@@ -359,19 +370,25 @@ public class MedicalHistoryController {
         return "Prescription.jsf?faces-redirect=true";
     }
     
-    public String sortMedicinesBy(String column) {
-        if (column.equals(this.medicineSortColumn)) {
-            this.medicineSortAscending = !this.medicineSortAscending;
-        } else {
-            this.medicineSortColumn = column;
-            this.medicineSortAscending = true;
-        }
+ // Replace sortMedicinesBy() with:
+    public void sortMedicinesByAsc(String column) {
+        this.medicineSortColumn = column;
+        this.medicineSortAscending = true;
+        sortMedicines();
+    }
 
-        if (prescribedMedicines != null) {
-            Collections.sort(prescribedMedicines, new Comparator<PrescribedMedicines>() {
+    public void sortMedicinesByDesc(String column) {
+        this.medicineSortColumn = column;
+        this.medicineSortAscending = false;
+        sortMedicines();
+    }
+
+    private void sortMedicines() {
+        if (allMedicines != null) {
+            Collections.sort(allMedicines, new Comparator<PrescribedMedicines>() {
                 public int compare(PrescribedMedicines m1, PrescribedMedicines m2) {
                     int result = 0;
-                    switch (column) {
+                    switch (medicineSortColumn) {
                         case "prescribedId":
                             result = safeCompare(m1.getPrescribedId(), m2.getPrescribedId());
                             break;
@@ -382,9 +399,7 @@ public class MedicalHistoryController {
                             result = safeCompare(m1.getDosage(), m2.getDosage());
                             break;
                         case "type":
-                            String type1 = m1.getType() != null ? m1.getType().toString() : "";
-                            String type2 = m2.getType() != null ? m2.getType().toString() : "";
-                            result = type1.compareToIgnoreCase(type2);
+                            result = safeCompare(m1.getType(), m2.getType());
                             break;
                         case "duration":
                             result = safeCompare(m1.getDuration(), m2.getDuration());
@@ -400,22 +415,19 @@ public class MedicalHistoryController {
                     }
                     return medicineSortAscending ? result : -result;
                 }
-
-                private <T extends Comparable<T>> int safeCompare(T o1, T o2) {
-                    if (o1 == null && o2 == null) return 0;
-                    if (o1 == null) return -1;
-                    if (o2 == null) return 1;
-                    return o1.compareTo(o2);
-                }
             });
         }
-
         medicineCurrentPage = 1;
         getPaginatedMedicines();
-        return null;
     }
 
+    public boolean isMedicineAscDisabled(String column) {
+        return column.equals(this.medicineSortColumn) && this.medicineSortAscending;
+    }
 
+    public boolean isMedicineDescDisabled(String column) {
+        return column.equals(this.medicineSortColumn) && !this.medicineSortAscending;
+    }
 
     public String viewMedicinesForSelectedPrescription(Prescription prescription) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -451,10 +463,10 @@ public class MedicalHistoryController {
     }
     
     public int getMedicineTotalPages() {
-        if (prescribedMedicines == null || prescribedMedicines.isEmpty()) {
+        if (allMedicines == null || allMedicines.isEmpty()) {
             return 1;
         }
-        return (int) Math.ceil((double) prescribedMedicines.size() / medicinePageSize);
+        return (int) Math.ceil((double) allMedicines.size() / medicinePageSize);
     }
 
     public List<PrescribedMedicines> getPaginatedMedicines() {
@@ -482,10 +494,6 @@ public class MedicalHistoryController {
         return medicineCurrentPage;
     }
 
-//    public int getTotalMedicinePages() {
-//        return (int) Math.ceil((double) allMedicines.size() / medicinePageSize);
-//    }
-
     public String previousMedicinePage() {
         if (medicineCurrentPage > 1) {
             medicineCurrentPage--;
@@ -502,19 +510,25 @@ public class MedicalHistoryController {
     }
 
     
-    public String sortTestsBy(String column) {
-        if (column.equals(this.testsSortColumn)) {
-            this.testsSortAscending = !this.testsSortAscending;
-        } else {
-            this.testsSortColumn = column;
-            this.testsSortAscending = true;
-        }
+ // Replace sortTestsBy() with:
+    public void sortTestsByAsc(String column) {
+        this.testsSortColumn = column;
+        this.testsSortAscending = true;
+        sortTests();
+    }
 
+    public void sortTestsByDesc(String column) {
+        this.testsSortColumn = column;
+        this.testsSortAscending = false;
+        sortTests();
+    }
+
+    private void sortTests() {
         if (prescribedTests != null) {
             Collections.sort(prescribedTests, new Comparator<ProcedureTest>() {
                 public int compare(ProcedureTest t1, ProcedureTest t2) {
                     int result = 0;
-                    switch (column) {
+                    switch (testsSortColumn) {
                         case "testId":
                             result = safeCompare(t1.getTestId(), t2.getTestId());
                             break;
@@ -532,23 +546,20 @@ public class MedicalHistoryController {
                     }
                     return testsSortAscending ? result : -result;
                 }
-
-                private <T extends Comparable<T>> int safeCompare(T o1, T o2) {
-                    if (o1 == null && o2 == null) return 0;
-                    if (o1 == null) return -1;
-                    if (o2 == null) return 1;
-                    return o1.compareTo(o2);
-                }
             });
         }
-
-        // Reset pagination to page 1
         testCurrentPage = 1;
         getPaginatedTests();
-        return null;
     }
 
+    public boolean isTestAscDisabled(String column) {
+        return column.equals(this.testsSortColumn) && this.testsSortAscending;
+    }
 
+    public boolean isTestDescDisabled(String column) {
+        return column.equals(this.testsSortColumn) && !this.testsSortAscending;
+    }
+    
     public String viewTestsForSelectedPrescription(Prescription prescription) {
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -618,19 +629,25 @@ public class MedicalHistoryController {
         return testCurrentPage <= 1;
     }
 
-    public String sortLogsBy(String column) {
-        if (column.equals(this.logSortColumn)) {
-            this.logSortAscending = !this.logSortAscending;
-        } else {
-            this.logSortColumn = column;
-            this.logSortAscending = true;
-        }
+ // Replace sortLogsBy() with:
+    public void sortLogsByAsc(String column) {
+        this.logSortColumn = column;
+        this.logSortAscending = true;
+        sortLogs();
+    }
 
+    public void sortLogsByDesc(String column) {
+        this.logSortColumn = column;
+        this.logSortAscending = false;
+        sortLogs();
+    }
+
+    private void sortLogs() {
         if (allLogs != null) {
             Collections.sort(allLogs, new Comparator<ProcedureDailyLog>() {
                 public int compare(ProcedureDailyLog l1, ProcedureDailyLog l2) {
                     int result = 0;
-                    switch (column) {
+                    switch (logSortColumn) {
                         case "logDate":
                             result = safeCompare(l1.getLogDate(), l2.getLogDate());
                             break;
@@ -645,21 +662,18 @@ public class MedicalHistoryController {
                     }
                     return logSortAscending ? result : -result;
                 }
-
-                private <T extends Comparable<T>> int safeCompare(T o1, T o2) {
-                    if (o1 == null && o2 == null) return 0;
-                    if (o1 == null) return -1;
-                    if (o2 == null) return 1;
-                    return o1.compareTo(o2);
-                }
             });
         }
-
-        // Reset to first page and update pagination
         logCurrentPage = 1;
         getPaginatedLogs();
-        System.out.println(getPaginatedLogs());
-        return null;
+    }
+    
+    public boolean isLogAscDisabled(String column) {
+        return column.equals(this.logSortColumn) && this.logSortAscending;
+    }
+
+    public boolean isLogDescDisabled(String column) {
+        return column.equals(this.logSortColumn) && !this.logSortAscending;
     }
 
     public String loadProcedureLogs(MedicalProcedure procedure) {
@@ -738,52 +752,66 @@ public class MedicalHistoryController {
         return allLogs.subList(start, end);
     }
 
-    public String sortPrescriptionsBy(String column) {
-        if (column.equals(this.prescriptionSortColumn)) {
-            this.prescriptionSortAscending = !this.prescriptionSortAscending;
-        } else {
-            this.prescriptionSortColumn = column;
-            this.prescriptionSortAscending = true;
-        }
-
-        if (allPrescriptions != null && !allPrescriptions.isEmpty()) {
-            Comparator<Prescription> comparator = null;
-
-            switch (column) {
-                case "writtenOn":
-                    comparator = Comparator.comparing(Prescription::getWrittenOn, Comparator.nullsLast(Date::compareTo));
-                    break;
-                case "startDate":
-                    comparator = Comparator.comparing(Prescription::getStartDate, Comparator.nullsLast(Date::compareTo));
-                    break;
-                case "endDate":
-                    comparator = Comparator.comparing(Prescription::getEndDate, Comparator.nullsLast(Date::compareTo));
-                    break;
-                case "prescriptionId":
-                    comparator = Comparator.comparing(Prescription::getPrescriptionId, Comparator.nullsLast(String::compareToIgnoreCase));
-                    break;
-            }
-
-            if (comparator != null) {
-                if (!prescriptionSortAscending) {
-                    comparator = comparator.reversed();
-                }
-                allPrescriptions.sort(comparator);
-            }
-        }
-
-        prescriptionCurrentPage = 1;
-        getPaginatedPrescriptions();
-        return null;
+ // Replace sortPrescriptionsBy() with:
+    public void sortPrescriptionsByAsc(String column) {
+        this.prescriptionSortColumn = column;
+        this.prescriptionSortAscending = true;
+        sortPrescriptions();
     }
 
+    public void sortPrescriptionsByDesc(String column) {
+        this.prescriptionSortColumn = column;
+        this.prescriptionSortAscending = false;
+        sortPrescriptions();
+    }
+
+    private void sortPrescriptions() {
+        if (allPrescriptions != null) {
+            Collections.sort(allPrescriptions, new Comparator<Prescription>() {
+                public int compare(Prescription p1, Prescription p2) {
+                    int result = 0;
+                    switch (prescriptionSortColumn) {
+                        case "prescriptionId":
+                            result = safeCompare(p1.getPrescriptionId(), p2.getPrescriptionId());
+                            break;
+                        case "writtenOn":
+                            result = safeCompare(p1.getWrittenOn(), p2.getWrittenOn());
+                            break;
+                        case "startDate":
+                            result = safeCompare(p1.getStartDate(), p2.getStartDate());
+                            break;
+                        case "endDate":
+                            result = safeCompare(p1.getEndDate(), p2.getEndDate());
+                            break;
+                        case "doctorName":
+                            String doc1 = (p1.getDoctor() != null) ? p1.getDoctor().getDoctorName() : "";
+                            String doc2 = (p2.getDoctor() != null) ? p2.getDoctor().getDoctorName() : "";
+                            result = doc1.compareToIgnoreCase(doc2);
+                            break;
+                        default:
+                            result = 0;
+                    }
+                    return prescriptionSortAscending ? result : -result;
+                }
+            });
+        }
+        prescriptionCurrentPage = 1;
+    }
+
+    public boolean isPrescriptionAscDisabled(String column) {
+        return column.equals(this.prescriptionSortColumn) && this.prescriptionSortAscending;
+    }
+
+    public boolean isPrescriptionDescDisabled(String column) {
+        return column.equals(this.prescriptionSortColumn) && !this.prescriptionSortAscending;
+    }
 
     public List<Prescription> getPaginatedPrescriptions() {
-        if (prescriptionList == null || prescriptionList.isEmpty()) {
+        if (allPrescriptions == null || allPrescriptions.isEmpty()) {
             return Collections.emptyList();
         }
 
-        int totalSize = prescriptionList.size();
+        int totalSize = allPrescriptions.size();
         int start = (prescriptionCurrentPage - 1) * prescriptionPageSize;
         int end = Math.min(start + prescriptionPageSize, totalSize);
 
@@ -791,16 +819,16 @@ public class MedicalHistoryController {
             return Collections.emptyList();
         }
 
-        return prescriptionList.subList(start, end);
+        return allPrescriptions.subList(start, end);
     }
 
     public int getTotalPrescriptionRecords() {
-        return (prescriptionList != null) ? prescriptionList.size() : 0;
+        return (allPrescriptions != null) ? allPrescriptions.size() : 0;
     }
     
     public int getTotalPrescriptionPages() {
-        return (prescriptionList == null || prescriptionList.isEmpty()) ? 1 :
-                (int) Math.ceil((double) prescriptionList.size() / prescriptionPageSize);
+        return (allPrescriptions == null || allPrescriptions.isEmpty()) ? 1 :
+                (int) Math.ceil((double) allPrescriptions.size() / prescriptionPageSize);
     }
 
     public void goToFirstPrescriptionPage() {
@@ -809,12 +837,12 @@ public class MedicalHistoryController {
     }
 
     public void goToLastPrescriptionPage() {
-        prescriptionCurrentPage = getPrescriptionTotalPages();
+        prescriptionCurrentPage = getTotalPrescriptionPages();
         getPaginatedPrescriptions();
     }
 
     public void goToNextPrescriptionPage() {
-        if (prescriptionCurrentPage < getPrescriptionTotalPages()) {
+        if (prescriptionCurrentPage < getTotalPrescriptionPages()) {
             prescriptionCurrentPage++;
             getPaginatedPrescriptions();
         }
@@ -937,12 +965,12 @@ public class MedicalHistoryController {
 		this.pageSize = pageSize;
 	}
 
-	public List<Prescription> getPrescriptionList() {
-		return prescriptionList;
+	public List<Prescription> getallPrescriptions() {
+		return allPrescriptions;
 	}
 
-	public void setPrescriptionList(List<Prescription> prescriptionList) {
-		this.prescriptionList = prescriptionList;
+	public void setallPrescriptions(List<Prescription> allPrescriptions) {
+		this.allPrescriptions = allPrescriptions;
 	}
 
 	public String getPrescriptionSortColumn() {
@@ -1087,14 +1115,6 @@ public class MedicalHistoryController {
 
 	public void setAllPrescriptions(List<Prescription> allPrescriptions) {
 		this.allPrescriptions = allPrescriptions;
-	}
-
-	public int getPrescriptionTotalPages() {
-		return prescriptionTotalPages;
-	}
-
-	public void setPrescriptionTotalPages(int prescriptionTotalPages) {
-		this.prescriptionTotalPages = prescriptionTotalPages;
 	}
 
 	public List<PrescribedMedicines> getAllMedicines() {
