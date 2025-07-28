@@ -40,18 +40,25 @@ input[type="text"], select {
 }
 
 .btn {
-    padding: 10px 20px;
-    margin-top: 10px;
-    background-color: #007bff;
-    border: none;
+    background-color: #4b5563; /* Gray for secondary buttons */
     color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 16px;
+    margin-right: 10px;
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: #1f2937; /* Darker gray on hover */
+}
+
+.btn-primary {
+    background-color: #2563eb; /* Blue for primary button */
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8; /* Darker blue on hover */
 }
 
 .btn-spacing {
@@ -199,10 +206,15 @@ input[type="text"], select {
 
                 <div>
                     <h:commandButton value="Search"
-                        action="#{medicalHistoryController.searchProcedures}"
-                        styleClass="btn btn-spacing" />
-                    <h:commandButton value="Reset"
-                        action="#{medicalHistoryController.resetForm}" styleClass="btn" />
+					    action="#{medicalHistoryController.searchProcedures}"
+					    styleClass="btn btn-primary btn-spacing" />
+					<h:commandButton value="Reset"
+					    action="#{medicalHistoryController.resetForm}" 
+					    styleClass="btn btn-spacing" />
+					<h:commandButton value="Back" 
+					    action="#{availabilityController.backButton}" 
+					    immediate="true" 
+					    styleClass="btn" />
                 </div>
 
                 <h:messages globalOnly="true" style="color:red; margin-top:10px;"

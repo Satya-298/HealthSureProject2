@@ -375,19 +375,6 @@ public class AppointmentController {
         return (allAppointments != null) ? allAppointments.size() : 0;
     }
 
-//    private List<Appointment> allAppointments;
-//    private List<Appointment> searchResults;
-//
-//    private String doctorId;
-//    private String status;
-//
-//    // Sorting & Pagination
-//    private String sortColumn = "";
-//    private boolean sortAscending = true;
-//    private int pageSize = 5;
-//    private int currentPage = 1;
-//    private int totalPages;
-    
     //Reset Form
     
     public String resetForm() {
@@ -398,6 +385,12 @@ public class AppointmentController {
     	this.searchResults = null;
     	
     	return null;
+    }
+    
+    // Back Button
+    
+    public String backButton() {
+    	return "menu.jsf?faces-redirect=true";
     }
     // ------------------ Getters and Setters ------------------
 

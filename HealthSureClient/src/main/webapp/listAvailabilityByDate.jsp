@@ -90,12 +90,24 @@
         th {
             background-color: #f9fafb;
             color: #2563eb;
+        }
+        .sort-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sort-icons {
+            display: inline-flex;
+            flex-direction: column;
+            margin-left: 5px;
+        }
+        .sort-icon {
+            font-size: 0.7em;
+            line-height: 1;
             cursor: pointer;
         }
-        .arrow {
-            font-size: 14px;
-            margin-left: 4px;
-            color: #2563eb;
+        .sort-icon:hover {
+            color: #007bff;
         }
         .pagination-panel {
             margin-top: 24px;
@@ -110,32 +122,29 @@
             margin-top: 16px;
         }
         .btn-update {
-	        background-color: #28a745; /* Bootstrap green */
-	        color: white;
-	        border: none;
-	        padding: 5px 10px;
-	        border-radius: 4px;
-	        cursor: pointer;
-	        font-weight: bold;
-	    }
-	
-	    .btn-update:hover {
-	        background-color: #218838;
-	    }
-	
-	    .delete-button {
-	        background-color: #dc3545; /* Bootstrap red */
-	        color: white;
-	        border: none;
-	        padding: 5px 10px;
-	        border-radius: 4px;
-	        cursor: pointer;
-	        font-weight: bold;
-	    }
-	
-	    .delete-button:hover {
-	        background-color: #c82333;
-	    }
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-update:hover {
+            background-color: #218838;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
     </style>
 
     <script>
@@ -171,53 +180,72 @@
 
     <h:panelGroup rendered="#{not empty availabilityController.availabilityByDateList}">
         <div class="table-wrapper">
-			<h:dataTable value="#{availabilityController.paginatedList}" var="avail" border="1">
+          <h:outputText value="Total Records: #{availabilityController.totalRecords}" styleClass="total-records" />
+            <h:dataTable value="#{availabilityController.paginatedList}" var="avail" border="1">
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('availabilityId')}">
-                            <span class="sort-header">
-                                Availability ID
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'availabilityId' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Availability ID" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('availabilityId')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'availabilityId' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('availabilityId')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'availabilityId' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.availabilityId}" />
                 </h:column>
-                
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('doctorName')}">
-                            <span>Doctor
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'doctorName' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Doctor" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('doctorName')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'doctorName' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('doctorName')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'doctorName' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.doctor.doctorName}" />
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('specialization')}">
-                            <span>Specialization
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'specialization' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Specialization" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('specialization')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'specialization' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('specialization')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'specialization' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.doctor.specialization}" />
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('availableDate')}">
-                            <span>Available Date
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'availableDate' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Available Date" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('availableDate')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'availableDate' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('availableDate')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'availableDate' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.availableDate}">
                         <f:convertDateTime pattern="dd-MM-yyyy" />
@@ -226,12 +254,17 @@
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('startTime')}">
-                            <span>Start Time
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'startTime' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Start Time" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('startTime')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'startTime' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('startTime')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'startTime' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.startTime}" >
                         <f:convertDateTime pattern="HH:mm" />
@@ -240,94 +273,117 @@
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('endTime')}">
-                            <span>End Time
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'endTime' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="End Time" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('endTime')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'endTime' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('endTime')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'endTime' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.endTime}" >
                         <f:convertDateTime pattern="HH:mm" />
-                   	</h:outputText>
+                    </h:outputText>
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('slotType')}">
-                            <span>Slot Type
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'slotType' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Slot Type" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('slotType')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'slotType' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('slotType')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'slotType' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.slotType}" />
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('recurring')}">
-                            <span>Recurring
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'recurring' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Recurring" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('recurring')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'recurring' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('recurring')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'recurring' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.recurring ? 'Yes' : 'No'}" />
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('totalSlots')}">
-                            <span>Total Slots
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'totalSlots' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Total Slots" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('totalSlots')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'totalSlots' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('totalSlots')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'totalSlots' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.totalSlots}" />
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">
-                        <h:commandLink action="#{availabilityController.sortBy('notes')}">
-                            <span>Notes
-                                <h:outputText styleClass="arrow"
-                                              value="#{availabilityController.sortColumn eq 'notes' ? (availabilityController.sortAscending ? '▲' : '▼') : ''}" />
-                            </span>
-                        </h:commandLink>
+                        <h:panelGroup layout="block" style="display: flex; align-items: center; justify-content: center;">
+                            <h:outputText value="Notes" />
+                            <h:panelGroup styleClass="sort-icons">
+                                <h:commandLink action="#{availabilityController.sortByAsc('notes')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'notes' and availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▲</h:commandLink>
+                                <h:commandLink action="#{availabilityController.sortByDesc('notes')}" 
+                                               rendered="#{!(availabilityController.sortColumn eq 'notes' and not availabilityController.sortAscending)}" 
+                                               styleClass="sort-icon">▼</h:commandLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </f:facet>
                     <h:outputText value="#{avail.notes}" />
                 </h:column>
                 
                 <h:column>
-	                <f:facet name="header">
-	                    <h:outputText value="Update" />
-	                </f:facet>
-	                <h:commandButton value="Update" action="updateAvailability" styleClass="btn-update">
-	                    <f:setPropertyActionListener target="#{availabilityController.selectedAvailability}" value="#{avail}" />
-	                </h:commandButton>
-	            </h:column>
-	            
+                    <f:facet name="header">
+                        <h:outputText value="Update" />
+                    </f:facet>
+                    <h:commandButton value="Update" action="updateAvailability" styleClass="btn-update">
+                        <f:setPropertyActionListener target="#{availabilityController.selectedAvailability}" value="#{avail}" />
+                    </h:commandButton>
+                </h:column>
             </h:dataTable>
         </div>
 
         <!-- Pagination -->
         <h:panelGroup layout="block" styleClass="pagination-panel">
             <h:commandButton value="First" action="#{availabilityController.goToFirstPage}"
-                 disabled="#{availabilityController.currentPage == 1}" />
+                 disabled="#{availabilityController.currentPage == 1}" styleClass="btn btn-gray" />
 
-			<h:commandButton value="Previous" action="#{availabilityController.previousPage}"
-			                 disabled="#{availabilityController.currentPage == 1}" />
-			
-			<h:outputText value="Page #{availabilityController.currentPage} of #{availabilityController.totalPages}" />
-			
-			<h:commandButton value="Next" action="#{availabilityController.nextPage}"
-			                 disabled="#{availabilityController.currentPage == availabilityController.totalPages}" />
-			
-			<h:commandButton value="Last" action="#{availabilityController.goToLastPage}"
-			                 disabled="#{availabilityController.currentPage == availabilityController.totalPages}" />
-
+            <h:commandButton value="Previous" action="#{availabilityController.previousPage}"
+                             disabled="#{availabilityController.currentPage == 1}" styleClass="btn btn-gray" />
+            
+            <h:outputText value="Page #{availabilityController.currentPage} of #{availabilityController.totalPages}" />
+            
+            <h:commandButton value="Next" action="#{availabilityController.nextPage}"
+                             disabled="#{availabilityController.currentPage == availabilityController.totalPages}" styleClass="btn btn-gray" />
+            
+            <h:commandButton value="Last" action="#{availabilityController.goToLastPage}"
+                             disabled="#{availabilityController.currentPage == availabilityController.totalPages}" styleClass="btn btn-gray" />
         </h:panelGroup>
     </h:panelGroup>
 

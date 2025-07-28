@@ -29,21 +29,18 @@
 
 	<managed-bean>
 		<managed-bean-name>availabilityController</managed-bean-name>
-		<managed-bean-class>com.infinite.jsf.provider.controller.DoctorAvailabilityController
-		</managed-bean-class>
+		<managed-bean-class>com.infinite.jsf.provider.controller.DoctorAvailabilityController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 
 		<managed-property>
 			<property-name>availabilityDao</property-name>
-			<property-class>com.infinite.jsf.provider.daoImpl.DoctorAvailabilityDaoImpl
-			</property-class>
+			<property-class>com.infinite.jsf.provider.daoImpl.DoctorAvailabilityDaoImpl</property-class>
 			<value>#{availabilityDao}</value>
 		</managed-property>
 
 		<managed-property>
 			<property-name>availability</property-name>
-			<property-class>com.infinite.jsf.provider.model.DoctorAvailability
-			</property-class>
+			<property-class>com.infinite.jsf.provider.model.DoctorAvailability</property-class>
 			<value>#{availability}</value>
 		</managed-property>
 	</managed-bean>
@@ -121,13 +118,13 @@
 		<managed-bean-class>com.infinite.ejb.provider.model.DoctorAvailability</managed-bean-class> 
 		<managed-bean-scope>session</managed-bean-scope> </managed-bean> EJB Logic 
 		Bean <managed-bean> <managed-bean-name>availabilityEjbImpl</managed-bean-name> 
-		<managed-bean-class>com.infinite.ejb.provider.beans.DoctorAvailabilityEjbImpl</managed-bean-class> 
+		<managed-bean-class>com.infinite.ejb.provider.bean.DoctorAvailabilityEjbImpl</managed-bean-class> 
 		<managed-bean-scope>session</managed-bean-scope> </managed-bean> Controller 
 		Bean <managed-bean> <managed-bean-name>availabilityController</managed-bean-name> 
 		<managed-bean-class>com.infinite.jsf.provider.controller.DoctorAvailabilityController</managed-bean-class> 
 		<managed-bean-scope>session</managed-bean-scope> Inject EJB Model <managed-property> 
 		<property-name>ejbAvailability</property-name> <property-class>com.infinite.ejb.provider.model.DoctorAvailability</property-class> 
 		<value>#{ejbAvailability}</value> </managed-property> Inject EJB Logic <managed-property> 
-		<property-name>availabilityEjbImpl</property-name> <property-class>com.infinite.ejb.provider.beans.DoctorAvailabilityEjbImpl</property-class> 
+		<property-name>availabilityEjbImpl</property-name> <property-class>com.infinite.ejb.provider.bean.DoctorAvailabilityEjbImpl</property-class> 
 		<value>#{availabilityEjbImpl}</value> </managed-property> </managed-bean> -->
 </faces-config>

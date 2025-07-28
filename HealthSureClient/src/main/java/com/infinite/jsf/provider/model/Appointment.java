@@ -12,7 +12,7 @@ public class Appointment implements Serializable {
     private Doctors doctor;
     private Recipient recipient;
     private DoctorAvailability availability;
-    private Providers provider;
+    private Provider provider;
 
     private Date requestedAt;
     private Date bookedAt;
@@ -62,11 +62,11 @@ public class Appointment implements Serializable {
         this.availability = availability;
     }
 
-    public Providers getProvider() {
+    public Provider getProvider() {
         return provider;
     }
 
-    public void setProvider(Providers provider) {
+    public void setProvider(Provider provider) {
         this.provider = provider;
     }
 
@@ -151,7 +151,7 @@ public class Appointment implements Serializable {
     }
 
     public Appointment(String appointmentId, Doctors doctor, Recipient recipient,
-                       DoctorAvailability availability, Providers provider,
+                       DoctorAvailability availability, Provider provider,
                        Date requestedAt, Date bookedAt, Date cancelledAt, Date completedAt,
                        AppointmentStatus status, int slotNo, Date start, Date end,
                        String notes, Set<MedicalProcedure> medicalProcedure) {

@@ -11,9 +11,9 @@ public class Prescription implements Serializable{
     private String prescriptionId;
  
     // Foreign key object mappings
-    private MedicalProcedure medicalProcedure;    // mapped from procedure_id
+    private MedicalProcedure procedure;    // mapped from procedure_id
     private Recipient recipient;           // mapped from h_id
-    private Providers provider;             // mapped from provider_id
+    private Provider provider;             // mapped from provider_id
     private Doctors doctor;                 // mapped from doctor_id
  
     private Date writtenOn;
@@ -32,12 +32,12 @@ public class Prescription implements Serializable{
 		this.prescriptionId = prescriptionId;
 	}
 
-	public MedicalProcedure getMedicalProcedure() {
-		return medicalProcedure;
+	public MedicalProcedure getProcedure() {
+		return procedure;
 	}
 
-	public void setMedicalProcedure(MedicalProcedure medicalProcedure) {
-		this.medicalProcedure = medicalProcedure;
+	public void setProcedure(MedicalProcedure procedure) {
+		this.procedure = procedure;
 	}
 
 	public Recipient getRecipient() {
@@ -48,11 +48,11 @@ public class Prescription implements Serializable{
 		this.recipient = recipient;
 	}
 
-	public Providers getProvider() {
+	public Provider getProvider() {
 		return provider;
 	}
 
-	public void setProvider(Providers provider) {
+	public void setProvider(Provider provider) {
 		this.provider = provider;
 	}
 
@@ -113,9 +113,9 @@ public class Prescription implements Serializable{
 	}
 
 	public Prescription() {
-        this.medicalProcedure = new MedicalProcedure();
+        this.procedure = new MedicalProcedure();
         this.recipient = new Recipient();
-        this.provider = new Providers();
+        this.provider = new Provider();
         this.doctor = new Doctors();
     }
     
@@ -123,7 +123,7 @@ public class Prescription implements Serializable{
     public String toString() {
         return "Prescription [" +
                 "prescriptionId=" + prescriptionId +
-                ", procedureId=" + (medicalProcedure != null ? medicalProcedure.getProcedureId() : null) +
+                ", procedureId=" + (procedure != null ? procedure.getProcedureId() : null) +
                 ", recipientId=" + (recipient != null ? recipient.gethId() : null) +
                 ", providerId=" + (provider != null ? provider.getProviderId() : null) +
                 ", doctorId=" + (doctor != null ? doctor.getDoctorId() : null) +

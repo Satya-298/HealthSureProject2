@@ -12,7 +12,7 @@ public class MedicalProcedure implements Serializable {
     private String procedureId;
     private Appointment appointment;
     private Recipient recipient;
-    private Providers provider;
+    private Provider provider;
     private Doctors doctor;
  
     private Date scheduledDate;      // NEW: for procedures planned ahead
@@ -27,7 +27,7 @@ public class MedicalProcedure implements Serializable {
     private Date createdAt;
     private ProcedureType type;
     
-    private Set<Prescription> prescription;
+    private Set<Prescription> prescriptions;
     private Set<ProcedureDailyLog> logs;
     
     public ProcedureType getType() {
@@ -49,7 +49,7 @@ public class MedicalProcedure implements Serializable {
     public MedicalProcedure() {
         this.appointment = new Appointment();
         this.recipient = new Recipient();
-        this.provider = new Providers();
+        this.provider = new Provider();
         this.doctor = new Doctors();
     }
  
@@ -78,11 +78,11 @@ public class MedicalProcedure implements Serializable {
         this.recipient = recipient;
     }
  
-    public Providers getProvider() {
+    public Provider getProvider() {
 		return provider;
 	}
 
-	public void setProvider(Providers provider) {
+	public void setProvider(Provider provider) {
 		this.provider = provider;
 	}
 
@@ -158,12 +158,12 @@ public class MedicalProcedure implements Serializable {
         this.createdAt = createdAt;
     }
  
-    public Set<Prescription> getPrescription() {
-		return prescription;
+    public Set<Prescription> getPrescriptions() {
+		return prescriptions;
 	}
 
-	public void setPrescription(Set<Prescription> prescription) {
-		this.prescription = prescription;
+	public void setPrescription(Set<Prescription> prescriptions) {
+		this.prescriptions = prescriptions;
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public class MedicalProcedure implements Serializable {
                 ", procedureStatus=" + procedureStatus +
                 ", createdAt=" + createdAt +
 //                ", claimsCount=" + (claims != null ? claims.size() : 0) +
-                ", prescriptionsCount=" + (prescription != null ? prescription.size() : 0) +
+                ", prescriptionsCount=" + (prescriptions != null ? prescriptions.size() : 0) +
                 ", logsCount=" + (logs != null ? logs.size() : 0) +
                 "]";
     }

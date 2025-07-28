@@ -37,7 +37,7 @@ public class DoctorAvailabilityController {
     private int totalRecords;
 
     public int getTotalRecords() {
-        return totalRecords;
+        return (availabilityByDateList != null) ? availabilityByDateList.size() : 0;
     }
 
     public void setTotalRecords(int totalRecords) {
@@ -116,19 +116,24 @@ public class DoctorAvailabilityController {
         currentPage = 1;
     }
 
-    public String sortBy(String column) {
-        if (column.equals(this.sortColumn)) {
-            this.sortAscending = !this.sortAscending;
-        } else {
-            this.sortColumn = column;
-            this.sortAscending = true;
-        }
+    public void sortByAsc(String column) {
+        this.sortColumn = column;
+        this.sortAscending = true;
+        sortAvailability();
+    }
 
+    public void sortByDesc(String column) {
+        this.sortColumn = column;
+        this.sortAscending = false;
+        sortAvailability();
+    }
+
+    private void sortAvailability() {
         if (availabilityByDateList != null) {
             Collections.sort(availabilityByDateList, new Comparator<DoctorAvailability>() {
                 public int compare(DoctorAvailability a1, DoctorAvailability a2) {
                     int result = 0;
-                    switch (column) {
+                    switch (sortColumn) {
                         case "availabilityId":
                             result = safeCompare(a1.getAvailabilityId(), a2.getAvailabilityId());
                             break;
@@ -183,9 +188,7 @@ public class DoctorAvailabilityController {
                 }
             });
         }
-
-        resetPagination();
-        return null;
+        currentPage = 1;
     }
     
     //Add Availability
@@ -401,7 +404,6 @@ public class DoctorAvailabilityController {
         resetPagination(); // sets currentPage = 1
         return null;
     }
-
     
     // Update
     public String updateAvailability() {
@@ -556,6 +558,9 @@ public class DoctorAvailabilityController {
         return "listAvailabilityByDate?faces-redirect=true";
     }
 
+    public String backButton() {
+    	return "menu.jsf?faces-redirect=true";
+    }
 
 
 

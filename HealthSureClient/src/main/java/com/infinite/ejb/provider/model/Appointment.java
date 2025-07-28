@@ -2,7 +2,7 @@ package com.infinite.ejb.provider.model;
 
 import java.util.Date;
 
-import com.infinite.ejb.recepient.model.Recipient;
+import com.infinite.ejb.recipient.model.Recipient;
 
 public class Appointment {
 

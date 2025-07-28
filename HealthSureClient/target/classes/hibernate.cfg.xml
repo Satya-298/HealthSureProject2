@@ -23,7 +23,7 @@
         <property name="hibernate.validator.autoregister_listeners">false</property>
         
         
-    	<mapping resource="com/infinite/jsf/provider/mapping/Providers.hbm.xml"/>
+    	<mapping resource="com/infinite/jsf/provider/mapping/Provider.hbm.xml"/>
     	<mapping resource="com/infinite/jsf/provider/mapping/Doctors.hbm.xml"/>
     	<mapping resource="com/infinite/jsf/provider/mapping/DoctorAvailability.hbm.xml"/>
     	<mapping resource="com/infinite/jsf/recipient/mapping/Recipient.hbm.xml"/>

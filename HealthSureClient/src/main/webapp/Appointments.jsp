@@ -180,6 +180,8 @@
                 <div style="margin-top: 20px;">
                     <h:commandButton value="Search" action="#{appointmentController.loadAppointmentsByStatus}" styleClass="btn btn-primary" />
                     <h:commandButton value="Reset" action="#{appointmentController.resetForm}" styleClass="btn" />
+                    <h:commandButton value="Back" action="#{appointmentController.backButton}" 
+                    	immediate="true" styleClass="btn" />
                 </div>
             </div>
 
