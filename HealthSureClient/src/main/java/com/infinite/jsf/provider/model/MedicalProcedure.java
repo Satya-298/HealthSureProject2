@@ -162,7 +162,7 @@ public class MedicalProcedure implements Serializable {
 		return prescriptions;
 	}
 
-	public void setPrescription(Set<Prescription> prescriptions) {
+	public void setPrescriptions(Set<Prescription> prescriptions) {
 		this.prescriptions = prescriptions;
 	}
 

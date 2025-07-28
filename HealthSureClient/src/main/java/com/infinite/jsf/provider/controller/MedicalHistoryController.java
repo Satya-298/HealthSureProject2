@@ -342,7 +342,7 @@ public class MedicalHistoryController {
         this.prescribedTests = new ArrayList<>();
         
         // Check if procedure has any prescriptions
-        if (procedure.getPrescription() == null || procedure.getPrescription().isEmpty()) {
+        if (procedure.getPrescriptions() == null || procedure.getPrescriptions().isEmpty()) {
             context.addMessage(null, 
                 new FacesMessage(FacesMessage.SEVERITY_INFO, 
                 "No prescription found for procedure ID: " + procedure.getProcedureId(), 
@@ -351,7 +351,7 @@ public class MedicalHistoryController {
         }
         
         // Load prescription details
-        for (Prescription p : procedure.getPrescription()) {
+        for (Prescription p : procedure.getPrescriptions()) {
             Prescription detailed = medicalHistoryDao.getPrescriptionWithDetails(p.getPrescriptionId());
             
             if (detailed != null) {

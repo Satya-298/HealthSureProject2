@@ -157,7 +157,16 @@
             gap: 1rem;
             z-index: 9999;
         }
-
+	
+		.spinner {
+            border: 4px solid #6ee7b7;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
         .popup-box.hidden {
             display: none;
         }
@@ -180,6 +189,11 @@
 
             <h:inputHidden id="hiddenMsg" value="#{availabilityController.message}" />
 
+			<div id="popupBox" class="popup-box hidden">
+                <span id="popupMessage">Adding...</span>
+                <div id="spinner" class="spinner"></div>
+            </div>
+            
             <div class="form-grid">
                 <div>
                     <h:outputLabel for="availabilityId">
@@ -275,6 +289,7 @@
 	document.addEventListener("DOMContentLoaded", function () {
 	    const popupBox = document.getElementById("popupBox");
 	    const popupMessage = document.getElementById("popupMessage");
+	    const spinner = document.getElementById("spinner");
 	    const hiddenMsg = document.getElementById("availabilityForm:hiddenMsg");
 	
 	    if (hiddenMsg && hiddenMsg.value && hiddenMsg.value.trim() === "Availability Added Successfully...") {

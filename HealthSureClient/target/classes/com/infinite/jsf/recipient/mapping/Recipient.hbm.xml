@@ -1,63 +1,164 @@
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
-<hibernate-mapping package="com.infinite.jsf.recipient.model">
-
-    <class name="Recipient" table="Recipient">
-
-        <id name="hId" column="h_id" type="string">
-            <generator class="assigned"/>
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+ 
+<hibernate-mapping>
+    <class name="com.infinite.jsf.recipient.model.Recipient" table="recipient">
+        <id name="hId" type="string">
+            <column name="h_id" />
+            
         </id>
-
-        <property name="firstName" column="first_name"/>
-        <property name="lastName" column="last_name"/>
-        <property name="mobile"/>
-        <property name="userName" column="user_name"/>
-
+ 
+        <property name="firstName" type="java.lang.String">
+            <column name="first_name" />
+        </property>
+ 
+        <property name="lastName" type="java.lang.String">
+            <column name="last_name" />
+        </property>
+ 
+        <property name="mobile" type="java.lang.String">
+            <column name="mobile" />
+        </property>
+ 
+        <property name="userName" type="java.lang.String">
+            <column name="user_name" />
+        </property>
+ 
         <property name="gender">
-            <column name="gender"/>
-            <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">com.infinite.jsf.recipient.model.Gender</param>
-                <param name="type">12</param>
-            </type>
+			<column name="gender"/>
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">com.infinite.jsf.recipient.model.Gender</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+        <property name="dob" type="date">
+            <column name="dob" />
         </property>
-
-        <property name="dob" type="date"/>
-        <property name="address"/>
-        <property name="createdAt" column="created_at" type="timestamp"/>
-        <property name="password"/>
-        <property name="email"/>
-
+ 
+        <property name="address" type="java.lang.String">
+            <column name="address" />
+        </property>
+ 
+        <property name="createdAt" type="timestamp">
+            <column name="created_at" />
+        </property>
+ 
+        <property name="password" type="java.lang.String">
+            <column name="password" />
+        </property>
+ 
+        <property name="email" type="java.lang.String">
+            <column name="email" />
+        </property>
+ 
         <property name="status">
-            <column name="status"/>
+            <column name="status" />
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">com.infinite.jsf.recipient.model.RecipientStatus</param>
-                <param name="type">12</param>
+              <param name="enumClass">com.infinite.jsf.recipient.model.RecipientStatus</param>
+			  <param name="type">12</param>
             </type>
         </property>
+ 
+</class>
+  <sql-query name="PatientInsuranceDetails.findByRecipientId">
+    <return-scalar column="subscribeId" type="string"/>
+    <return-scalar column="hId" type="string"/>
+    <return-scalar column="patientName" type="string"/>
+    <return-scalar column="companyName" type="string"/>
+    <return-scalar column="planName" type="string"/>
+    <return-scalar column="enrollmentDate" type="date"/>
+    <return-scalar column="coverageStartDate" type="date"/>
+    <return-scalar column="coverageEndDate" type="date"/>
+    <return-scalar column="coverageStatus" type="string"/>
+    <return-scalar column="coverageType" type="string"/>
+    <return-scalar column="coverageLimit" type="double"/>
+    <return-scalar column="remaining" type="double"/>
+    <return-scalar column="claimed" type="double"/>
+    <return-scalar column="lastClaimDate" type="date"/>
 
-        <property name="loginAttempts" column="login_attempts"/>
-        <property name="lockedUntil" column="locked_until" type="timestamp"/>
-        <property name="lastLogin" column="last_login" type="timestamp"/>
-        <property name="passwordUpdatedAt" column="password_updated_at" type="timestamp"/>
+    <![CDATA[
+       SELECT 
+    s.subscribe_id AS subscribeId,
+    r.h_id AS hId,
+    CONCAT(r.first_name, ' ', r.last_name) AS patientName,
+    ic.name AS companyName,
+    ip.plan_name AS planName,
+    s.subscribe_date AS enrollmentDate,
+    s.subscribe_date AS coverageStartDate,
+    s.expiry_date AS coverageEndDate,
+    s.status AS coverageStatus,
+    s.`type` AS coverageType,
+    ico.coverage_amount AS coverageLimit,
+    (ico.coverage_amount - COALESCE(SUM(c.amount_approved), 0)) AS remaining,
+    COALESCE(SUM(c.amount_approved), 0) AS claimed,
+    MAX(c.claim_date) AS lastClaimDate
+FROM subscribe s
+JOIN insurance_coverage_option ico ON s.coverage_id = ico.coverage_id
+JOIN insurance_plan ip ON ico.plan_id = ip.plan_id
+JOIN insurance_company ic ON ip.company_id = ic.company_id
+JOIN recipient r ON s.h_id = r.h_id
+LEFT JOIN claims c ON c.subscribe_id = s.subscribe_id AND c.h_id = r.h_id
+WHERE r.h_id = :hId
+GROUP BY s.subscribe_id, r.h_id, r.first_name, r.last_name, ic.name, ip.plan_name,
+         s.subscribe_date, s.expiry_date, s.status, s.`type`, ico.coverage_amount
 
-        <!-- One-to-many with Appointment -->
-        <set name="appointment" cascade="all" inverse="true" lazy="false">
-            <key column="h_id"/>
-            <one-to-many class="com.infinite.jsf.provider.model.Appointment"/>
-        </set>
-        
-        <set name="medicalProcedure" cascade="all" inverse="true" lazy="true">
-  			<key column="h_id"/>
-  			<one-to-many class="com.infinite.jsf.provider.model.MedicalProcedure"/>
-		</set>
+    ]]>
+</sql-query>
+<sql-query name="RelatedPatientInsuranceDetails.findByMemberId">
+    <return-scalar column="subscribeId" type="string"/>
+    <return-scalar column="memberHId" type="string"/>
+    <return-scalar column="memberName" type="string"/>
+    <return-scalar column="memberAge" type="int"/>
+    <return-scalar column="memberGender" type="string"/>
+    <return-scalar column="relationWithProposer" type="string"/>
+    <return-scalar column="proposerName" type="string"/>
+    <return-scalar column="enrollmentDate" type="date"/>
+    <return-scalar column="coverageStartDate" type="date"/>
+    <return-scalar column="coverageEndDate" type="date"/>
+    <return-scalar column="coverageStatus" type="string"/>
+    <return-scalar column="coverageType" type="string"/>
+    <return-scalar column="coverageLimit" type="double"/>
+    <return-scalar column="remaining" type="double"/>
+    <return-scalar column="claimed" type="double"/>
+    <return-scalar column="lastClaimDate" type="date"/>
+    <return-scalar column="planName" type="string"/>
+    <return-scalar column="companyName" type="string"/>
 
-		<set name="prescriptions" table="prescription" inverse="true" lazy="true" cascade="all">
-    		<key column="h_id"/>
-    		<one-to-many class="com.infinite.jsf.provider.model.Prescription"/>
-		</set>	
-
-
-    </class>
+    <![CDATA[
+        SELECT 
+            s.subscribe_id AS subscribeId,
+            sm.h_id AS memberHId,
+            sm.full_name AS memberName,
+            sm.age AS memberAge,
+            sm.gender AS memberGender,
+            sm.relation_with_proposer AS relationWithProposer,
+            CONCAT(r.first_name, ' ', r.last_name) AS proposerName,
+            s.subscribe_date AS enrollmentDate,
+            s.start_date AS coverageStartDate,
+            s.expiry_date AS coverageEndDate,
+            s.status AS coverageStatus,
+            s.type AS coverageType,
+            ico.coverage_amount AS coverageLimit,
+            (ico.coverage_amount - COALESCE(SUM(c.amount_approved), 0)) AS remaining,
+            COALESCE(SUM(c.amount_approved), 0) AS claimed,
+            MAX(c.claim_date) AS lastClaimDate,
+            ip.plan_name AS planName,
+            ic.name AS companyName
+        FROM subscribe s
+        JOIN subscribed_members sm ON s.subscribe_id = sm.subscribe_id
+        JOIN recipient r ON s.h_id = r.h_id
+        JOIN insurance_coverage_option ico ON s.coverage_id = ico.coverage_id
+        JOIN insurance_plan ip ON ico.plan_id = ip.plan_id
+        JOIN insurance_company ic ON ip.company_id = ic.company_id
+        LEFT JOIN claims c ON c.subscribe_id = s.subscribe_id AND c.h_id = sm.h_id
+        WHERE sm.h_id = :hId
+        GROUP BY 
+            s.subscribe_id, sm.h_id, sm.full_name, sm.age, sm.gender, sm.relation_with_proposer,
+            r.first_name, r.last_name, s.subscribe_date, s.start_date, s.expiry_date, s.status, s.type,
+            ico.coverage_amount, ip.plan_name, ic.name
+    ]]>
+</sql-query>
 </hibernate-mapping>
+        
+ 
